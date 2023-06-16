@@ -1,23 +1,160 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Landing Page</title>
-    <link rel="stylesheet" type="text/css" href="/Css/index.css">
+  <title>Mi Blog de Artículos</title>
+  <style>
+     body {
+      background-image: url('assets/img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: black;
+      color: white;
+    }
+
+    /* Estilos específicos para los artículos */
+    #article-list {
+      border: 2px solid white; /* Establece el borde blanco */
+      padding: 10px; /* Añade espacio interno al recuadro */
+      background-color: black;
+    }
+    
+    #article-list h3 {
+      color: white;
+    }
+    
+    #article-list pre {
+      color: white;
+      white-space: pre-wrap; /* Preserva los espacios y saltos de línea */
+      
+    }
+
+
+    
+    h1 {
+      text-align: center;
+      color: #fafafa;
+    }
+    
+    form {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #fafafa;
+    }
+    
+    input[type="text"],
+    textarea {
+      width: 95%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    h2 {
+      color: #fafafa;
+    }
+    
+    p {
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Bienvenido a la Landing Page</h1>
-    </header>
-
-    <div class="container">
-        <form id="article-form">
-            <input type="text" id="title-input" placeholder="Título del artículo" required>
-            <textarea id="content-input" placeholder="Contenido del artículo" required></textarea>
-            <button type="submit">Subir artículo</button>
-        </form>
-        <div id="articles-list"></div>
+    <h1>Mi Blog de Artículos</h1>
+  
+    <form id="article-form">
+      <label for="title">Título del artículo:</label>
+      <input type="text" id="title" name="title" required><br><br>
+      
+      <label for="content">Contenido del artículo:</label><br>
+      <textarea id="content" name="content" rows="5" cols="30" required></textarea><br><br>
+      
+      <input type="submit" value="Subir artículo">
+    </form>
+    
+    <h2>Artículos:</h2>
+    
+    <div id="article-list">
+      <!-- Aquí se mostrarán los artículos -->
     </div>
-
-    <script src="/Js/index.js"></script>
+  
+  <script>
+    // Carga los artículos almacenados en el localStorage al cargar la página
+    window.addEventListener("DOMContentLoaded", function() {
+      loadArticles();
+    });
+    
+    document.getElementById("article-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+    
+      var title = document.getElementById("title").value;
+      var content = document.getElementById("content").value;
+      
+      // Crea un objeto de artículo
+      var article = {
+        title: title,
+        content: content
+      };
+      
+      // Obtiene los artículos existentes del localStorage
+      var articles = getArticlesFromStorage();
+      
+      // Agrega el nuevo artículo al arreglo de artículos
+      articles.push(article);
+      
+      // Guarda los artículos actualizados en el localStorage
+      saveArticlesToStorage(articles);
+      
+      // Vuelve a cargar los artículos para mostrar el nuevo artículo
+      loadArticles();
+      
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+    });
+    
+    function getArticlesFromStorage() {
+      // Obtiene los artículos del localStorage o devuelve un arreglo vacío si no existen
+      var storedArticles = localStorage.getItem("articles");
+      return storedArticles ? JSON.parse(storedArticles) : [];
+    }
+    
+    function saveArticlesToStorage(articles) {
+      // Guarda los artículos en el localStorage
+      localStorage.setItem("articles", JSON.stringify(articles));
+    }
+    
+    function loadArticles() {
+      // Limpia la lista de artículos existente
+      var articleList = document.getElementById("article-list");
+      articleList.innerHTML = "";
+      
+      // Obtiene los artículos del localStorage
+      var articles = getArticlesFromStorage();
+      
+      // Muestra los artículos en la página
+      articles.forEach(function(article) {
+        var articleElement = document.createElement("div");
+        articleElement.innerHTML = "<h3>" + article.title + "</h3><p>" + article.content + "</p>";
+        articleList.appendChild(articleElement);
+      });
+    }
+  </script>
 </body>
 </html>
